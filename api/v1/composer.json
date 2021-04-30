@@ -1,0 +1,16 @@
+{
+  "name": "mediator/app",
+  "description": "collector",
+  "require": {
+    "phpmailer/phpmailer": "^6.1",
+    "firebase/php-jwt": "^5.0",
+    "guzzlehttp/guzzle": "^6.5",
+    "ismaeltoe/osms": "^2.0",
+    "google/cloud-storage": "^1.23"
+  },
+  "autoload": {
+    "psr-4": {
+      "Model\\":"models/"
+    }
+  }
+}

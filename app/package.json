@@ -1,0 +1,41 @@
+{
+  "name": "monshop",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "nuxt",
+    "build": "nuxt build",
+    "start": "npm run start",
+    "generate": "nuxt generate"
+  },
+  "dependencies": {
+    "@ckeditor/ckeditor5-build-classic": "^27.0.0",
+    "@ckeditor/ckeditor5-vue2": "^1.0.5",
+    "@nuxtjs/auth": "^4.9.1",
+    "@nuxtjs/auth-next": "5.0.0-1617907813.5a3c3a8",
+    "@nuxtjs/axios": "^5.12.0",
+    "@nuxtjs/moment": "^1.6.1",
+    "@nuxtjs/pwa": "^3.0.0-beta.20",
+    "@tui-nuxt/editor": "^1.0.0-beta.3",
+    "cookie-universal-nuxt": "^2.1.4",
+    "jspdf-html2canvas": "^1.4.9",
+    "nanoid": "^2.1.11",
+    "nuxt": "^2.15.4",
+    "nuxt-facebook-pixel-module": "^1.5.0",
+    "nuxt-start": "^2.14.12",
+    "tesseract.js": "^2.1.4",
+    "vue-ctk-date-time-picker": "^2.5.0",
+    "vue-fuse": "^3.0.0",
+    "vue-google-oauth2": "^1.5.8",
+    "vue-google-oauth2-gapi": "^1.0.11",
+    "vue-toastification": "^1.7.6",
+    "vue2-editor": "^2.10.2",
+    "vuedraggable": "^2.24.3"
+  },
+  "devDependencies": {
+    "@nuxtjs/vuetify": "^1.11.2",
+    "eslint-config-prettier": "^8.1.0",
+    "eslint-plugin-prettier": "^3.1.4",
+    "prettier": "^2.0.5"
+  }
+}

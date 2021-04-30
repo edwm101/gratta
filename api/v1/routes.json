@@ -1,0 +1,27 @@
+{
+  "recaptcha": "/auth/verification-reset-password",
+  "auth": [
+    {
+      "paths": "/auth/validation|/auth/send-verification-email|/auth/verification-code|/auth/new-reset-password",
+      "roles": ["admin"]
+    },
+    {
+      "paths": "/person/admin.*",
+      "roles": ["admin"]
+    }
+  ],
+  "mounts": [
+    {
+      "path": "/public",
+      "controller": "public/index"
+    },
+    {
+      "path": "/person/admin",
+      "controller": "person/admin/index"
+    },
+    {
+      "path": "/auth",
+      "controller": "auth"
+    }
+  ]
+}
