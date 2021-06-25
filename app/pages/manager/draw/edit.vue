@@ -4,14 +4,71 @@
     <v-container grid-list-xs>
       <v-row>
         <v-col cols="12" md="4">
-          <v-card class="elevation-0">
-            <v-form
-              ref="form"
-              class="overflow-auto"
-              style="max-height: 400px"
-              v-model="valid"
-            >
+          <v-card class="elevation-0" :loading="loading" :disabled="loading">
+            <v-form ref="form" class="overflow-auto" v-model="valid">
               <v-row no-gutters>
+                <v-col cols="12" class="pa-2">
+                  <v-card-actions>
+                    <v-switch
+                      hide-details
+                      inset
+                      label="Afficher"
+                      class="ma-0 pa-1"
+                      v-model="form.is_show"
+                    ></v-switch>
+                    <v-spacer></v-spacer>
+                    <v-icon
+                      :disabled="!(form.id && resume.amount == form.total_amount && resume.winner == form.nb_winner)"
+                      x-large
+                      class="white--text grey lighten-4 pa-1 rounded-circle bg-success"
+                      @click="save('go')"
+                      >mdi-play</v-icon
+                    >
+                  </v-card-actions>
+                </v-col>
+                <v-col cols="12" class="pa-2">
+                  <InputNumberRange
+                    filled
+                    :min="1"
+                    rounded
+                    class="no-shadow input"
+                    dense
+                    hide-details
+                    label="Numéro de tirage"
+                    v-model="form.number"
+                    :rules="[$method.rule_required]"
+                  ></InputNumberRange
+                ></v-col>
+                <v-col cols="12" class="pa-2">
+                  <InputNumberRange
+                    filled
+                    :min="1"
+                    rounded
+                    class="no-shadow input"
+                    dense
+                    hide-details
+                    step="100"
+                    label="Montant total
+"
+                    v-model="form.total_amount"
+                    :rules="[$method.rule_required]"
+                  ></InputNumberRange
+                ></v-col>
+                <v-col cols="12" class="pa-2">
+                  <InputNumberRange
+                    filled
+                    :min="1"
+                    rounded
+                    class="no-shadow input"
+                    dense
+                    hide-details
+                    step="1"
+                    label="Nombre de gagnants
+"
+                    v-model="form.nb_winner"
+                    :rules="[$method.rule_required]"
+                  ></InputNumberRange
+                ></v-col>
                 <v-col cols="12" class="pa-2">
                   <v-text-field
                     filled
@@ -21,6 +78,7 @@
                     hide-details
                     label="Nom"
                     v-model="form.name"
+                    :rules="[$method.rule_required]"
                   ></v-text-field
                 ></v-col>
                 <v-col cols="12" class="pa-2">
@@ -36,13 +94,42 @@
                   ></v-textarea>
                 </v-col>
                 <v-col cols="12" class="pa-2">
+                  <v-card-actions class="pa-0">
+                    <v-text-field
+                      filled
+                      rounded
+                      dense
+                      type="number"
+                      class="no-shadow input"
+                      rows="2"
+                      hide-details
+                      label="Début"
+                      v-model="form.start_interval"
+                    ></v-text-field>
+                    <v-divider class="mx-1" vertical></v-divider>
+                    <v-text-field
+                      filled
+                      rounded
+                      dense
+                      type="number"
+                      class="no-shadow input"
+                      rows="2"
+                      hide-details
+                      label="Fin"
+                      v-model="form.end_interval"
+                    ></v-text-field>
+                  </v-card-actions>
+                </v-col>
+                <v-col cols="12" class="pa-2">
                   <dialog-date
                     filled
                     rounded
                     type="number"
                     class="no-shadow input"
                     rows="2"
+                    :clearable="true"
                     dense
+                    :no_time="false"
                     hide-details
                     label="Date de l'evenement"
                     v-model="form.event_date"
@@ -84,59 +171,6 @@
           </v-card>
         </v-col>
         <v-col cols="12" md="7" v-if="form.id">
-          <v-card :loading="loading" :disabled="loading">
-            <v-card-actions>
-              <v-text-field
-                filled
-                rounded
-                dense
-                type="number"
-                class="no-shadow input"
-                rows="2"
-                hide-details
-                label="Début"
-                v-model="form.start_interval"
-              ></v-text-field>
-              <v-divider class="mx-1" vertical></v-divider>
-              <v-text-field
-                filled
-                rounded
-                dense
-                type="number"
-                class="no-shadow input"
-                rows="2"
-                hide-details
-                label="Fin"
-                v-model="form.end_interval"
-              ></v-text-field>
-              <v-divider class="mx-1" vertical></v-divider>
-
-              <v-btn
-                color="success"
-                class="shadow"
-                height="50"
-                @click="generateCode()"
-                >Généré</v-btn
-              >
-            </v-card-actions>
-          </v-card>
-          <v-card
-            dark
-            v-if="form.file"
-            class="mt-4 mb-2 header"
-            :href="form.file"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <v-card-actions>
-              <v-icon>mdi-file</v-icon>
-              <div class="mx-2">{{ form.file }}</div>
-              <v-btn color="success" icon>
-                <v-icon large>mdi-download</v-icon></v-btn
-              >
-            </v-card-actions>
-          </v-card>
-
           <v-row class="my-1" dense>
             <v-col>
               <v-card class="elevation-0 pa-2">
@@ -144,37 +178,41 @@
                   <div class="title font-weight-bold">
                     {{ $method.numberFormat(resume.total) }}
                   </div>
-                  <div class="caption grey--text">Nombre de codes</div>
+                  <div class="caption grey--text">Nombre de participants</div>
                 </div>
               </v-card>
             </v-col>
             <v-col>
-              <v-card class="elevation-0 pa-2">
+              <v-card class="elevation-0 pa-2 " dark  :class="
+                  resume.winner == form.nb_winner
+                    ? 'bg-success'
+                    : 'warning darken-1'
+                ">
                 <div class="text-center">
                   <div class="title font-weight-bold">
-                    {{ $method.numberFormat(resume.winner) }}
+                    {{ $method.numberFormat(resume.winner) }} /
+                    {{ form.nb_winner }}
                   </div>
-                  <div class="caption grey--text">Nombre de gagnants</div>
+                  <div class="caption white--text">Nombre de gagnants</div>
                 </div>
               </v-card>
             </v-col>
             <v-col>
-              <v-card class="elevation-0 pa-2">
+              <v-card
+                class="elevation-0 pa-2"
+                :class="
+                  resume.amount == form.total_amount
+                    ? 'bg-success'
+                    : 'warning darken-1'
+                "
+                dark
+              >
                 <div class="text-center">
                   <div class="title font-weight-bold">
-                    {{ $method.moneyFormat(resume.amount) }}
+                    {{ $method.moneyFormat(resume.amount, '') }}/
+                    {{ $method.moneyFormat(form.total_amount, '') }}
                   </div>
-                  <div class="caption grey--text">Montant total</div>
-                </div>
-              </v-card>
-            </v-col>
-            <v-col v-if="resume.winner">
-              <v-card class="elevation-0 pa-2">
-                <div class="text-center">
-                  <div class="title font-weight-bold">
-                    {{ $method.moneyFormat(resume.amount / resume.winner) }}
-                  </div>
-                  <div class="caption grey--text">Montant moyen</div>
+                  <div class="caption white--text">Montant total (TND)</div>
                 </div>
               </v-card>
             </v-col>
@@ -184,7 +222,19 @@
             class="v-data-table v-data-table--fixed-header theme--light rounded-lg mt-4 overflow-hidden"
           >
             <div class="v-data-table__wrapper">
-              <div class="title pa-2">Les codes</div>
+              <v-card-actions>
+                <div class="title pa-2">Les codes</div>
+                <v-spacer></v-spacer>
+                <v-btn
+                  color="success"
+                  class="shadow"
+                  @click="
+                    dialog = true
+                    form_code = {}
+                  "
+                  >Ajouter</v-btn
+                >
+              </v-card-actions>
               <v-divider></v-divider>
               <v-card-actions class="pa-0 px-1">
                 <v-text-field
@@ -201,43 +251,64 @@
                   v-model="filter.q"
                   label="p.ex Code"
                 ></v-text-field>
-                <v-checkbox
-                  label="Les gagnants"
-                  v-model="filter.is_winner"
-                  class="ma-0 pt-4 pa-0 pr-2"
-                  @change="initCode()"
-                  value="value"
-                ></v-checkbox>
               </v-card-actions>
               <v-divider></v-divider>
               <table>
                 <thead>
                   <tr>
+                    <th class="text-left">#</th>
                     <th class="text-left">Code</th>
-                    <th class="text-left">Montante</th>
+                    <th class="text-left">Montant</th>
+                    <th class="text-left">Nom</th>
+                    <th class="text-left">Téléphone</th>
+                    <th class="text-left">Gouvernorat</th>
                   </tr>
                 </thead>
 
-                <tbody>
-                  <tr v-for="item in items" :key="item.id" class="cp">
+                <draggable
+                  v-model="items"
+                  group="people"
+                  @end="saveSort()"
+                  handle=".grabbable"
+                  tag="tbody"
+                >
+                  <tr
+                    v-for="item in items"
+                    :key="item.id"
+                    class="cp"
+                    @click="
+                      dialog = true
+                      form_code = { ...item }
+                    "
+                  >
+                    <td
+                      :style="
+                        item.amount
+                          ? 'border-left:4px solid #05a081!important'
+                          : ''
+                      "
+                    >
+                      <v-icon class="grabbable" v-if="!filter.q && item.amount"
+                        >mdi-drag</v-icon
+                      >
+                    </td>
                     <td>
                       <b> {{ item.code }}</b>
                     </td>
                     <td>
-                      <v-text-field
-                        solo
-                        flat
-                        style="width: 100px"
-                        hide-details
-                        placeholder="p.ex 50"
-                        v-model="item.amount"
-                        @input="saveCode(item)"
-                        dense
-                        class="border"
-                      ></v-text-field>
+                      <b> {{ $method.moneyFormat(item.amount) }}</b>
                     </td>
-                  </tr>
-                </tbody>
+                    <td>
+                      <b> {{ item.full_name }}</b>
+                    </td>
+                    <td>
+                      <b> {{ item.phone }}</b>
+                    </td>
+                    <td>
+                      <b> {{ item.governorate }}</b>
+                    </td>
+                  </tr></draggable
+                >
               </table>
               <card-list-vide
                 v-if="items.length < 1"
@@ -266,24 +337,129 @@
         </v-col>
       </v-row>
     </v-container>
+
+    <v-dialog
+      v-model="dialog"
+      scrollable
+      max-width="350px"
+      transition="dialog-transition"
+    >
+      <v-card class="gre white lighten-4">
+        <v-card-actions class="pa-2">
+          <v-spacer></v-spacer>
+          <v-icon class="close" @click="dialog = false">mdi-close</v-icon>
+        </v-card-actions>
+        <div>
+          <v-form v-model="valid_code">
+            <v-card-actions>
+              <v-text-field
+                filled
+                :rules="[$method.rule_required]"
+                rounded
+                dense
+                hide-details
+                type="number"
+                class="no-shadow input"
+                rows="2"
+                label="Code"
+                v-model="form_code.code"
+              ></v-text-field>
+              <v-divider class="mx-1" vertical></v-divider>
+              <v-text-field
+                filled
+                rounded
+                dense
+                hide-details
+                type="number"
+                class="no-shadow input"
+                rows="2"
+                label="Montant"
+                v-model="form_code.amount"
+              ></v-text-field>
+            </v-card-actions>
+            <div class="pa-2">
+              <v-text-field
+                filled
+                rounded
+                dense
+                hide-details
+                class="no-shadow input"
+                rows="2"
+                label="Nom"
+                v-model="form_code.full_name"
+              ></v-text-field>
+            </div>
+            <div class="pa-2">
+              <v-text-field
+                filled
+                rounded
+                dense
+                hide-details
+                class="no-shadow input"
+                rows="2"
+                type="number"
+                label="Téléphone"
+                v-model="form_code.phone"
+              ></v-text-field>
+            </div>
+            <div class="pa-2">
+              <v-select
+                filled
+                :items="governorates"
+                rounded
+                dense
+                hide-details
+                class="no-shadow input"
+                rows="2"
+                item-text="name"
+                item-value="name"
+                label="Gouvernorat"
+                v-model="form_code.governorate"
+              ></v-select>
+            </div>
+          </v-form>
+        </div>
+        <v-card-actions class="pa-2">
+          <v-btn color="error" text @click="removeCode()" v-if="form_code.id"
+            >Supprimer</v-btn
+          >
+          <v-spacer></v-spacer>
+          <v-btn
+            color="primary"
+            :disabled="!valid_code"
+            @click="saveCode(form_code)"
+            class="shadow"
+            >enregistrer</v-btn
+          >
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </div>
 </template>
 
 
 <script>
+import draggable from 'vuedraggable'
+
 export default {
+  components: {
+    draggable,
+  },
   data() {
     return {
       loading: false,
       dialog: false,
-      form: {},
+      form_code: {},
+      valid_code: false,
+      form: { number: 1 },
       valid: false,
       items: [],
       filter: {
-        max: 10,
+        max: 1000,
       },
       detail: {},
       resume: {},
+      governorates: [],
     }
   },
   watch: {
@@ -293,6 +469,16 @@ export default {
     },
   },
   methods: {
+    saveSort() {
+      var items = this.items.map((item) => {
+        return item.id
+      })
+      this.$api
+        .post('person/admin/draw/sort', {
+          ids: items,
+        })
+        .then((res) => {})
+    },
     setResume() {
       this.$api('person/admin/draw/resume', {
         params: { id: this.form.id },
@@ -311,7 +497,7 @@ export default {
         }
       })
     },
-    async save() {
+    async save(type = null) {
       this.loading = true
       await this.$api
         .post('person/admin/draw', {
@@ -325,37 +511,42 @@ export default {
                 query: { id: res.data.result.id },
               })
             this.$set(this.form, 'id', res.data.result.id)
+            if (type == 'go') {
+              this.$router.push({
+                name: 'play-id',
+                params: { id: this.form.id },
+              })
+            }
           }
         })
         .catch((e) => {})
       this.loading = false
     },
-    saveCode(item) {
-      this.$api
-        .post('person/admin/draw/code', {
-          ...item,
-        })
-        .then((res) => {
-          this.setResume()
-        })
-        .catch((e) => {})
-    },
-    async generateCode() {
+    async saveCode() {
       this.loading = true
-      console.log(this.form)
       await this.$api
-        .post('person/admin/draw/generate-code', {
-          ...this.form,
+        .post('person/admin/draw/code', {
+          ...this.form_code,
           draw_id: this.form.id,
         })
         .then((res) => {
-          this.$set(this.form, 'draw_file', res.data.result.draw_file)
-          this.initCode()
+          if (this.form_code.id) {
+            this.items = this.items.map((item) => {
+              if (item.id == this.form_code.id) {
+                item = { ...this.form_code }
+              }
+              return item
+            })
+          } else {
+            this.initCode()
+          }
           this.setResume()
         })
         .catch((e) => {})
+      this.dialog = false
       this.loading = false
     },
+
     initCode(reset = true) {
       if (reset) this.filter.cp = 1
       this.filter.draw_id = this.form.id
@@ -381,12 +572,31 @@ export default {
             this.items = this.items.filter((item) => {
               return item.id != this.form.id
             })
+            this.$router.push({ name: 'manager-draw' })
+            this.dialog = false
+          })
+      }
+    },
+    removeCode() {
+      var r = confirm('Êtes-vous sûr de vouloir supprimer cet élément!')
+      if (r) {
+        this.$api
+          .delete('person/admin/draw/code', {
+            params: { id: this.form_code.id },
+          })
+          .then((res) => {
+            this.items = this.items.filter((item) => {
+              return item.id != this.form_code.id
+            })
             this.dialog = false
           })
       }
     },
   },
   mounted() {
+    this.$api('public/location/governorate').then((res) => {
+      this.governorates = res.data.result
+    })
     this.init()
   },
 }

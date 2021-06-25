@@ -1,24 +1,6 @@
 <template>
-  <v-app>
-    <v-app-bar
-      dark
-      class="shadow header"
-      :clipped-left="$vuetify.breakpoint.lgAndUp"
-      app
-    >
-      <v-toolbar-title style="width: 140px" class="px-0 mx-1">
-        <nuxt-link :to="{ name: 'user' }">
-          <img
-            :src="require('~/assets/image/logo.png')"
-            alt="" height="45"
-            class="mr-1 mt-1"
-        /></nuxt-link>
-      </v-toolbar-title>
-
-      <v-spacer></v-spacer>
-
-      <card-account-menu></card-account-menu>
-    </v-app-bar>
+  <v-app class="is_rtl">
+  
     <v-main class="dash-content">
       <v-slide-y-transition mode="out-in">
         <nuxt />

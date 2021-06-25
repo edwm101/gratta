@@ -2,20 +2,19 @@ const colors = require('vuetify/es5/util/colors').default
 const fr = require('vuetify/es5/locale/fr')
 
 const api_url =
-  process.env.NODE_ENV !== 'production'
-    ? 'http://localhost/gratta/api/v1/'
-    : 'https://gratta.tvibrant.com/api/v1/'
+  process.env.NODE_ENV !== 'production' ? '/gratta/api/v1/' : '/api/v1/'
 
 module.exports = {
   ssr: true,
+  target: 'static' ,
   pwa: {
     workbox: { publicPath: '/_nuxt/' },
     manifest: {
       publicPath: '/_nuxt/',
       start_url: '/user',
-      name: 'Gratta',
+      name: 'Gargech',
       background_color: '#0b2239',
-      short_name: 'Gratta',
+      short_name: 'Gargech',
       lang: 'fr',
       gcm_sender_id: '357455137326',
       display: 'standalone',
@@ -42,9 +41,9 @@ module.exports = {
       translate: 'no',
       prefix: 'og: http://ogp.me/ns#',
     },
-    titleTemplate: '%s - Gratta',
+    titleTemplate: '%s - Gargech',
 
-    title: 'Gratta' || '',
+    title: 'Gargech' || '',
     meta: [
       { charset: 'utf-8' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1' },
@@ -55,7 +54,19 @@ module.exports = {
       },
     ],
     link: [{ rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }],
-    script: [],
+    script: [
+      {
+        src: 'https://unpkg.com/leaflet@1.7.1/dist/leaflet.js',
+        integrity:
+          'sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA==',
+        crossorigin: true,
+      },
+
+      {
+        src: '/leaflet.js',
+        crossorigin: true,
+      },
+    ],
   },
 
   css: ['@/assets/css/leaflet.css', '@/assets/css/style.css'],

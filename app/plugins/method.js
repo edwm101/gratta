@@ -1,5 +1,5 @@
 export default function ({ store }, inject) {
-  function moneyFormat(value, currency = 'TND') {
+  function moneyFormat(value, currency = 'دينار') {
     if (!value) return '0 ' + currency
     value =
       value != 0 && !isNaN(value)
@@ -174,7 +174,7 @@ export default function ({ store }, inject) {
           : '0 ' + currency
       return value.split('.').join(' ').split(',').join('.')
     },
-    moneyFormat: (value, currency = 'TND') => {
+    moneyFormat: (value, currency = 'دينار') => {
       if (!value) return '0 ' + currency
       value =
         value != 0 && !isNaN(value)
@@ -182,7 +182,7 @@ export default function ({ store }, inject) {
             ' ' +
             currency
           : '0 ' + currency
-      return value.split('.').join(' ')
+      return value
     },
     price: (price = 0, normal_price = 0, discount_price = 0) => {
       price = parseFloat(price)

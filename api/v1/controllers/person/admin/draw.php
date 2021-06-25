@@ -20,7 +20,7 @@ Route::get("code/all", function () {
     Func::emptyCheck([$draw_id]);
 
     App::$response =  Func::pagi("p.*", function ($statement) use ($draw_id) {
-        $req = ShQuery::db()->select($statement)->from("draw_code p")->where('draw_id=?', $draw_id);
+        $req = ShQuery::db()->select($statement)->from("draw_code p")->orderBy('amount IS NOT NULL desc,sort asc,amount desc')->where('draw_id=?', $draw_id);
 
         if (@App::$request["is_winner"]) {
             $req =  $req->where(
@@ -43,10 +43,39 @@ Route::get("code/all", function () {
 Route::post('code', function () {
     $id = @App::$request["id"];
     if ($id) {
+        DrawCode::isExists('code=? and draw_id=? and id!=?', [App::$request['code'], App::$request['draw_id'], $id]);
+
         DrawCode::save(App::$request);
+    } else {
+        DrawCode::isExists('code=? and draw_id=?', [App::$request['code'], App::$request['draw_id']]);
+        DrawCode::insert(App::$request);
     }
 });
 
+Route::post('sort', function () {
+    $ids = @App::$request["ids"];
+    Func::emptyCheck([$ids]);
+
+    $sids = implode(',', array_fill(0, count($ids), '?'));
+
+    $categories = ShQuery::db()->select("id,sort")->from('draw_code')->where('id in (' . $sids . ')', array_merge($ids))
+        ->orderBy("sort asc")->execute()->fetchAll();
+
+    foreach ($ids as $key => $id) {
+        if ($key == 0) {
+            $sort = $categories[$key]['sort'];
+        } else {
+            if ($categories[$key]['sort'] <= $categories[$key - 1]['sort']) {
+                $sort = $categories[$key - 1]['sort'] + 1;
+            } else {
+                $sort = $categories[$key]['sort'];
+            }
+        }
+        DrawCode::update(["sort" => $sort], 'id=?', [$id]);
+    }
+
+    App::$response["ids"] = $sort;
+});
 
 
 
@@ -134,6 +163,12 @@ Route::post('', function () {
     App::$response['result'] = [
         "id" => $id
     ];
+});
+
+Route::delete('code', function () {
+    $id = @App::$request["id"];
+    Func::emptyCheck([$id]);
+    DrawCode::delete("id=?", $id);
 });
 
 Route::delete('', function () {

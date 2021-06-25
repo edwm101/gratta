@@ -4,15 +4,18 @@
       <template v-slot:activator="{ on, attrs }">
         <div v-bind="attrs" v-on="on">
           <slot>
+           
             <v-text-field
               :label="label"
               append-icon="mdi-calendar-month"
               readonly
+              :clearable="clearable"
               dense
               :value="label_date"
               hide-details
               class="white-input white"
-              filled rounded
+              filled
+              rounded
             ></v-text-field>
           </slot></div
       ></template>
@@ -58,6 +61,9 @@ export default {
     no_time: {
       default: true,
     },
+    clearable: {
+      default: true,
+    },
   },
   data() {
     return {
@@ -84,11 +90,13 @@ export default {
     setDate() {
       if (this.c_date && this.time) {
         this.label_date = this.c_date + ' ' + this.time
-      }
-      if (this.c_date) {
-        this.label_date = this.c_date
+       
       } else {
-        this.label_date = null
+        if (this.c_date) {
+          this.label_date = this.c_date
+        } else {
+          this.label_date = null
+        }
       }
       this.$emit('input', new Date(this.label_date).getTime() / 1000)
     },

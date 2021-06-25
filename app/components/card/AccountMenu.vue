@@ -18,7 +18,7 @@
             >
               <v-avatar
                 icon
-                class="cp primary white--text font-weight-bold text-decoration-none"
+                class="cp primary mx-2 white--text font-weight-bold bg-primary text-decoration-none"
                 v-ripple
                 v-if="$store.state.user.info.first_name"
                 size="40"

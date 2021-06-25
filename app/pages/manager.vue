@@ -5,17 +5,8 @@
         v-model="drawer"
         app
         :clipped="$vuetify.breakpoint.lgAndUp"
-        class="elevation- shadow"
+        class="elevation-0 white"
         width="240px"
-        dark
-        style="
-          background-attachment: fixed;
-          background-color: #051e34;
-          background-image: url(https://www.gstatic.com/mobilesdk/190424_mobilesdk/nav_nachos@2x.png);
-          background-position: left 0 bottom 0;
-          background-repeat: no-repeat;
-          background-size: 256px 556px;
-        "
       >
         <div v-if="loading" class="mt-2">
           <v-skeleton-loader
@@ -44,9 +35,9 @@
         <template v-slot:append>
           <div class="pa-1">
             <v-btn
-              class="font-weight-bold black--text white"
-              color="white"
-              height="40"
+              class="font-weight-bold black--text white--text"
+              color="header"
+              x-large
               block
               :to="{ name: 'manager-draw-edit' }"
             >
@@ -60,7 +51,7 @@
       <v-app-bar
         :clipped-left="$vuetify.breakpoint.lgAndUp"
         dark
-        class="shadow"
+        class="header elevation-0"
         app
       >
         <v-btn @click.stop="drawer = !drawer" icon fab small class="small">
@@ -75,18 +66,10 @@
           ></v-skeleton-loader>
         </div>
         <v-card-actions style="max-width: 55%; width: 370px" class="px-0 mx-1">
-          <v-card class="rounded-lg overflow-hidden" :to="{ name: 'index' }">
-            <wmedia
-              _class="cp grey  white--text font-weight-bold  shadow text-decoration-none"
-              width="40px"
-              height="40px"
-              :path="require('~/assets/image/gratta.jpg')"
-            >
-            </wmedia>
-          </v-card>
+    
           <v-list-item-content class="mx-2">
-            <v-list-item-title class="ma-0 body-1 font-weight-bold d-flex">
-              Gratta Vinci
+            <v-list-item-title class="ma-0  headline text-uppercase font-weight-black d-flex">
+           <nuxt-link :to="{name:'manager-draw'}" class="white--text">   Gargech</nuxt-link>
             </v-list-item-title>
           </v-list-item-content>
         </v-card-actions>
@@ -116,7 +99,7 @@ export default {
   middleware: 'auth',
   data: () => ({
     loading: false,
-    drawer: null,
+    drawer: false,
     count: {},
     shop: {},
     items: [],
@@ -131,7 +114,6 @@ export default {
   },
   methods: {},
   async mounted() {
-    
     this.items = [
       {
         icon: 'mdi-clover',

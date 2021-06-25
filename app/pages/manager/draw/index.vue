@@ -8,13 +8,12 @@
 
     <v-container>
       <div style="max-width: 600px">
-        <div class="rounded-lg overflow-hidden fb-shadow white">
+        <div class="overflow-hidden ">
           <PFilter
             class="mb-0 rounded"
             v-model="filter"
             @input="init()"
           ></PFilter>
-          <v-divider></v-divider>
           <div class="pa-0 py-2 px-3 sub-title font-weight-bold">
             {{ $method.numberFormat(detail.total) }} tirages
           </div>
@@ -33,84 +32,79 @@
           <v-card
             v-for="(item, key) in data.items"
             :key="item.id"
-            class="mx-auto mb-6 fb-shadow"
-            :style="{
-              borderLeft: '5px solid ' + $c['color_' + item.status],
-            }"
+            class="mx-auto mb-6 overflow-hidden grey lighten-4  elevation-0"
           >
             <v-row no-gutters>
-              <v-col class="pa-1 px-0" cols="12">
-                <v-list-item class="pa-0">
-                  <div
-                    class="font-weight-medium text-center pa-1"
-                    style="min-width: 50px"
-                  >
-                    <v-icon
-                      x-large
+              <v-col class="pa-0 px-0" cols="12">
+                <v-card class="elevation-0" tile>
+                  <v-list-item class="pa-1">
+                    <div
+                      class="font-weight-medium text-center pa-1"
+                      style="min-width: 50px"
+                    >
+                      <v-icon
+                        x-large
+                        class="black--text grey lighten-4 pa-1 rounded-circle"
+                        @click="
+                          $router.push({
+                            name: 'play-id',
+                            params: { id: item.id },
+                          })
+                        "
+                        >mdi-play</v-icon
+                      >
+                      <br />
+                    </div>
+
+                    <v-list-item-content
+                      class="px-2 py-2 cp"
+                      v-ripple
                       @click="
                         $router.push({
-                          name: 'play-id',
-                          params: { id: item.id },
+                          name: 'manager-draw-edit',
+                          query: { id: item.id },
                         })
                       "
-                      >mdi-play</v-icon
                     >
-                    <br />
-                  </div>
-                  <v-divider vertical></v-divider>
+                      <v-list-item-title class="title font-weight-bold">
+                        ID {{ item.id }} {{ item.name }}
 
-                  <v-list-item-content
-                    class="px-2 py-1 cp"
-                    v-ripple
-                    @click="
-                      $router.push({
-                        name: 'manager-draw-edit',
-                        query: { id: item.id },
-                      })
-                    "
-                  >
-                    <v-list-item-title class="body-1 font-weight-bold">
-                      ID {{ item.id }} {{ item.name }}
-
-                      <span class="caption">{{ item.description }}</span>
-                    </v-list-item-title>
-                    <v-list-item-subtitle class="title" v-if="item.event_date"
-                      ><b>{{ item.time_down }}</b>
-                    </v-list-item-subtitle>
-                    <v-row class="my-0">
-                      <v-col>
-                        <div>
-                          <div class="title font-weight-bold">
-                            {{ $method.numberFormat(item.winner) }}
-                          </div>
-                          <div class="caption">Nombre de gagnants</div>
-                        </div>
-                      </v-col>
-                      <v-col>
-                        <div>
-                          <div class="title font-weight-bold">
-                            {{ $method.moneyFormat(item.amount) }}
-                          </div>
-                          <div class="caption">Montant total</div>
-                        </div>
-                      </v-col>
-                      <v-col v-if="item.winner">
-                        <div>
-                          <div class="title font-weight-bold">
-                            {{ $method.moneyFormat(item.amount / item.winner) }}
-                          </div>
-                          <div class="caption">Montant moyen</div>
-                        </div>
-                      </v-col>
-                    </v-row>
-                  </v-list-item-content>
-                  <v-switch
-                    hide-details
-                    @change="save(item)"
-                    class="ma-0 pa-1"
-                    v-model="item.is_show"
-                  ></v-switch>
-                </v-list-item>
+                        <span class="caption">{{ item.description }}</span>
+                      </v-list-item-title>
+                      <v-list-item-subtitle
+                        class="body-2 grey--text"
+                        v-if="item.event_date"
+                        ><b>{{ item.time_down }}</b>
+                      </v-list-item-subtitle>
+                    </v-list-item-content>
+                    <v-switch
+                      hide-details
+                      inset
+                      @change="save(item)"
+                      class="ma-0 pa-1"
+                      v-model="item.is_show"
+                    ></v-switch>
+                  </v-list-item>
+                </v-card>
+                <v-row class="my-0" no-gutters>
+                  <v-col class="pa-2">
+                    <div>
+                      <div class="title font-weight-bold">
+                        {{ $method.numberFormat(item.winner) }}
+                      </div>
+                      <div class="caption">Nombre de gagnants</div>
+                    </div>
+                  </v-col>
+                  <v-col class="pa-2">
+                    <div>
+                      <div class="title font-weight-bold">
+                        {{ $method.moneyFormat(item.amount, '') }}/
+                        {{ $method.moneyFormat(item.total_amount, '') }} TND
+                      </div>
+                      <div class="caption">Montant total</div>
+                    </div>
+                  </v-col>
+                </v-row>
               </v-col>
             </v-row>
             <div class="pb-1 px-2 caption" v-if="item.shop_note">
