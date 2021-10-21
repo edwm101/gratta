@@ -93,33 +93,7 @@
                     v-model="form.description"
                   ></v-textarea>
                 </v-col>
-                <v-col cols="12" class="pa-2">
-                  <v-card-actions class="pa-0">
-                    <v-text-field
-                      filled
-                      rounded
-                      dense
-                      type="number"
-                      class="no-shadow input"
-                      rows="2"
-                      hide-details
-                      label="Début"
-                      v-model="form.start_interval"
-                    ></v-text-field>
-                    <v-divider class="mx-1" vertical></v-divider>
-                    <v-text-field
-                      filled
-                      rounded
-                      dense
-                      type="number"
-                      class="no-shadow input"
-                      rows="2"
-                      hide-details
-                      label="Fin"
-                      v-model="form.end_interval"
-                    ></v-text-field>
-                  </v-card-actions>
-                </v-col>
+            
                 <v-col cols="12" class="pa-2">
                   <dialog-date
                     filled
@@ -513,8 +487,8 @@ export default {
             this.$set(this.form, 'id', res.data.result.id)
             if (type == 'go') {
               this.$router.push({
-                name: 'play-id',
-                params: { id: this.form.id },
+                name: 'play',
+                query: { id: this.form.id },
               })
             }
           }

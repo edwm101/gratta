@@ -16,7 +16,7 @@
   >
     <div
       style="
-        background: rgb(3, 2, 15, 0.82);
+        background: rgb(3, 2, 15, 0.92);
         position: absolute;
         width: 100%;
         height: 100%;
@@ -32,7 +32,7 @@
           <div class="text-center mb-6">
             <v-avatar
               size="avatarSize"
-              class="pa-0 elevation-4 rounded-xl lighten-4"
+              class="pa-0 rounded-xl lighten-4"
             >
               <img
                 :src="require('~/assets/image/icon.png')"

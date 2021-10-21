@@ -47,8 +47,8 @@
                         class="black--text grey lighten-4 pa-1 rounded-circle"
                         @click="
                           $router.push({
-                            name: 'play-id',
-                            params: { id: item.id },
+                            name: 'play',
+                            query: { id: item.id },
                           })
                         "
                         >mdi-play</v-icon

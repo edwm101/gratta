@@ -3,6 +3,13 @@
 use Model\Entity\Draw;
 use Model\Entity\DrawCode;
 
+Route::get('last-game', function () {
+    App::$response["result"] = Draw::db()->select("p.id")->from("draw p")->orderBy("number desc")
+        ->where("is_show is not null")->execute()->fetchObject();
+});
+
+
+
 Route::post('code', function () {
     $id = @App::$request["id"];
     unset(App::$request['amount']);
@@ -35,8 +42,8 @@ Route::get("winner", function () {
     $id = @App::$request["id"];
     Func::emptyCheck([$id]);
     $draw = Draw::find('id=?', $id);
-    App::$response['result'] =  DrawCode::db()->select('p.*')->from("draw_code p")->where('amount is not null and draw_id=?', $id)->orderBy('sort asc')
-        ->limit($draw->current_winner, 0)
+    App::$response['result'] =  DrawCode::db()->select('p.*')->from("draw_code p")->where('amount is not null and draw_id=?', $id)->orderBy('sort asc,amount IS NOT NULL desc,amount desc')
+        ->limit($draw->current_winner ? $draw->current_winner:0, 0)
         ->execute()->fetchAll();
 });
 

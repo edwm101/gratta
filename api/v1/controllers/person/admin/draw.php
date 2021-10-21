@@ -20,7 +20,7 @@ Route::get("code/all", function () {
     Func::emptyCheck([$draw_id]);
 
     App::$response =  Func::pagi("p.*", function ($statement) use ($draw_id) {
-        $req = ShQuery::db()->select($statement)->from("draw_code p")->orderBy('amount IS NOT NULL desc,sort asc,amount desc')->where('draw_id=?', $draw_id);
+        $req = ShQuery::db()->select($statement)->from("draw_code p")->orderBy('sort asc,amount IS NOT NULL desc,amount desc')->where('draw_id=?', $draw_id);
 
         if (@App::$request["is_winner"]) {
             $req =  $req->where(

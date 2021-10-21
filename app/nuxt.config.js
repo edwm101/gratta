@@ -102,7 +102,7 @@ module.exports = {
     treeShake: true,
     defaultAssets: {
       font: {
-        family: 'Roboto',
+        family: 'Poppins',
       },
       icons: 'mdi', // 'mdi' || 'mdiSvg' || 'md' || 'fa' || 'fa4' || 'faSvg'
     },
